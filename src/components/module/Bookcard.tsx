@@ -5,6 +5,7 @@ import { useDeleteBookMutation } from "@/redux/features/api/bookApi";
 import { toast } from "sonner";
 import { Trash2 } from "lucide-react";
 import Editmodal from "./Editmodal";
+import Borrow from "./Borrow";
 
 function Bookcard({ book }: AddbookProps) {
     const [deleteBook, { isLoading: deleteLoading }] = useDeleteBookMutation();
@@ -45,9 +46,7 @@ function Bookcard({ book }: AddbookProps) {
                 >
                     <Trash2 className="w-4 h-4" />
                 </Button>
-                <Button variant="outline" size="sm">
-                    Borrow Book
-                </Button>
+                <Borrow></Borrow>
             </TableCell>
         </TableRow>
     );

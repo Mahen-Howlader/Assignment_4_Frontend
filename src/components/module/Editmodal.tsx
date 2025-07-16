@@ -18,7 +18,7 @@ type EditModalProps = {
 function EditModal({ book }: EditModalProps) {
     const [open, setOpen] = useState(false);
     const [updateBook, { isLoading }] = useUpdateBookMutation();
-    const { register, handleSubmit, reset } = useForm<Book>({
+    const { register, handleSubmit } = useForm<Book>({
         defaultValues: book,
     });
     const onSubmit = async (data: Book) => {
@@ -68,9 +68,10 @@ function EditModal({ book }: EditModalProps) {
                         <DialogClose asChild>
                             <Button type="button" variant="outline">Cancel</Button>
                         </DialogClose>
-                        <Button type="submit" >
-                            Save Changes
+                        <Button type="submit" disabled={isLoading}>
+                            {isLoading ? "Changing..." : "Save Changes"}
                         </Button>
+
                     </DialogFooter>
                 </form>
             </DialogContent>

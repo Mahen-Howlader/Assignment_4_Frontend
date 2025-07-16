@@ -23,3 +23,8 @@ export interface Book {
 export interface AddbookProps {
   book: Book;
 }
+
+export interface IBorrow {
+    quantity : number,
+    dueDate : string,
+}
