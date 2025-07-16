@@ -1,36 +1,55 @@
-function Bookcard() {
+import type { AddbookProps } from "@/Typescript/typescript";
+import { TableCell, TableRow } from "../ui/table";
+import { Button } from "../ui/button";
+import { useDeleteBookMutation } from "@/redux/features/api/bookApi";
+import { toast } from "sonner";
+import { Trash2 } from "lucide-react";
+import Editmodal from "./Editmodal";
+
+function Bookcard({ book }: AddbookProps) {
+    const [deleteBook, { isLoading: deleteLoading }] = useDeleteBookMutation();
+
+    const { _id, title, author, genre, isbn, copies } = book;
+
+    async function deleteBookFun(id: string) {
+        try {
+            const { data } = await deleteBook(id);
+            toast.success(data?.message || "✅ Book deleted successfully!");
+        } catch (error: any) {
+            toast.error(`Failed to delete book: ${error?.data?.message || "Unknown error"}`);
+        }
+    }
+
     return (
-        <div>
-            <div className="bg-white shadow-md border rounded-2xl p-5 w-full max-w-sm hover:shadow-lg transition duration-300 space-y-4">
-                <div>
-                    <h2 className="text-xl font-semibold text-primary">Atomic Habits</h2>
-                    <p className="text-sm text-muted-foreground">by James Clear</p>
-                </div>
+        <TableRow>
+            <TableCell className="font-medium">{title}</TableCell>
+            <TableCell>{author}</TableCell>
+            <TableCell>{genre}</TableCell>
+            <TableCell>{isbn}</TableCell>
+            <TableCell>{copies}</TableCell>
+            <TableCell>
+                {copies <= 0 ? (
+                    <span className="text-red-600 font-medium">Unavailable</span>
+                ) : (
+                    <span className="text-green-600 font-medium">Available</span>
+                )}
+            </TableCell>
+            <TableCell className="flex justify-end gap-x-2">
+                <Editmodal book={book} />
 
-                <div className="text-sm space-y-1">
-                    <p><span className="font-medium">Genre:</span> Self-help</p>
-                    <p><span className="font-medium">ISBN:</span> 978-1-234567-89-7</p>
-                    <p><span className="font-medium">Copies:</span> 5</p>
-                    <p>
-                        <span className="font-medium">Availability:</span>
-                        <span className="text-green-600 ml-1">Available</span>
-                    </p>
-                </div>
-
-                <div className="flex justify-between pt-3">
-                    <button className="p-2 rounded-lg border hover:bg-gray-100">
-                        ✏️
-                    </button>
-                    <button className="p-2 rounded-lg border hover:bg-red-100 text-red-600">
-                        🗑️
-                    </button>
-                    <button className="p-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700">
-                        📚 Borrow
-                    </button>
-                </div>
-            </div>
-
-        </div>
+                <Button
+                    disabled={deleteLoading}
+                    onClick={() => deleteBookFun(_id)}
+                    variant="destructive"
+                    size="sm"
+                >
+                    <Trash2 className="w-4 h-4" />
+                </Button>
+                <Button variant="outline" size="sm">
+                    Borrow Book
+                </Button>
+            </TableCell>
+        </TableRow>
     );
 }
 

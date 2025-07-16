@@ -6,7 +6,7 @@ function RootLayout() {
     return (
         <div className="">
             <Navbar />
-            <main className="min-h-[calc(100vh-180px)]">
+            <main className="min-h-[calc(100vh-180px)] container mx-auto">
                 <Outlet />
             </main>
             <Footer></Footer>

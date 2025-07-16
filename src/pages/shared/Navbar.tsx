@@ -11,7 +11,7 @@ function Navbar() {
             <div className="container mx-auto">
                 <div className="flex items-center justify-between">
                     {/* Logo */}
-                    <h1 className="text-2xl font-bold text-primary">📘 Library</h1>
+                    <Link to={"/"} className="text-2xl font-bold text-primary">📘 Library</Link>
 
                     {/* Hamburger for mobile */}
                     {
@@ -38,7 +38,7 @@ function Navbar() {
                             </Button>
                         </Link>
 
-                        <Link to="/add-book">
+                        <Link to="/add-books">
                             <Button variant="ghost" className="flex items-center space-x-1">
                                 <Plus className="w-4 h-4" />
                                 <span>Add Book</span>
@@ -67,7 +67,7 @@ function Navbar() {
                         </Button>
                     </Link>
 
-                    <Link to="/add-book" onClick={() => setIsMenuOpen(false)}>
+                    <Link to="/add-books" onClick={() => setIsMenuOpen(false)}>
                         <Button variant="ghost" className="w-full justify-start">
                             <Plus className="w-4 h-4 mr-2" />
                             Add Book
