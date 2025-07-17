@@ -28,3 +28,11 @@ export interface IBorrow {
     quantity : number,
     dueDate : string,
 }
+
+export type BorrowSummary = {
+  book: {
+    title: string;
+    isbn: string;
+  };
+  totalQuantity: number;
+};

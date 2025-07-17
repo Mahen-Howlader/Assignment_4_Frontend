@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { Trash2 } from "lucide-react";
 import Editmodal from "./Editmodal";
 import Borrow from "./Borrow";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "../ui/alert-dialog";
 
 function Bookcard({ book }: AddbookProps) {
     const [deleteBook, { isLoading: deleteLoading }] = useDeleteBookMutation();
@@ -37,16 +38,33 @@ function Bookcard({ book }: AddbookProps) {
             </TableCell>
             <TableCell className="flex justify-end gap-x-2">
                 <Editmodal book={book} />
+                <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                        <Button variant="outline" className="bg-red-600 text-white" size="sm">
+                            <Trash2 className="w-4 h-4" />
+                        </Button>
+                    </AlertDialogTrigger>
 
-                <Button
-                    disabled={deleteLoading}
-                    onClick={() => deleteBookFun(_id)}
-                    variant="destructive"
-                    size="sm"
-                >
-                    <Trash2 className="w-4 h-4" />
-                </Button>
-                <Borrow></Borrow>
+                    <AlertDialogContent>
+                        <AlertDialogHeader>
+                            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                                This action cannot be undone. This will permanently delete the book and remove it from the database.
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction
+                            
+                                disabled={deleteLoading}
+                                onClick={() => deleteBookFun(_id)}
+                            >
+                                Continue
+                            </AlertDialogAction>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
+                <Borrow bookId={_id} copies={copies}></Borrow>
             </TableCell>
         </TableRow>
     );

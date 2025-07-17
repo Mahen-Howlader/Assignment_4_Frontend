@@ -14,13 +14,22 @@ import { Input } from "../ui/input";
 import type { IBorrow } from "@/Typescript/typescript";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useCreateBorrowMutation } from "@/redux/features/api/bookApi";
+import { toast } from "sonner";
+import { useState } from "react";
 
 const borrowSchema = z.object({
     quantity: z.coerce.number().min(1, "Borrow min 1 quantity required"),
     dueDate: z.string().min(1, "Due date is required"),
 });
 type FormData = z.infer<typeof borrowSchema>;
-function Borrow() {
+type bookType = {
+    bookId: string,
+    copies: number
+}
+function Borrow({ bookId, copies }: bookType) {
+    const [open, setOpen] = useState(false);
+    const [createBorrow, { isLoading }] = useCreateBorrowMutation();
     const form = useForm<FormData>({
         resolver: zodResolver(borrowSchema) as any,
         defaultValues: {
@@ -31,15 +40,25 @@ function Borrow() {
     const today = new Date();
     const localDate = today.toLocaleDateString('en-CA');
 
-    function onSubmit(data: IBorrow) {
-        console.log("📚 Borrow Info:", data);
+    async function onSubmit(data: IBorrow) {
+        try {
+            const book = bookId;
+            const fullData = { book, ...data };
+            const response = await createBorrow(fullData).unwrap();
+            console.log(response)
+            toast.success(response.message || "Borrow Book Successfuly");
+            setOpen(false);
+        } catch (error: any) {
+            console.log(error)
+            toast.error(`Failed to add borrow: ${error?.data?.message || "Unknown error"}`);
+        }
     }
 
     return (
         <div>
-            <Dialog>
+             <Dialog open={open} onOpenChange={setOpen}>
                 <DialogTrigger asChild>
-                    <Button variant="outline">Borrow Book</Button>
+                    <Button variant="outline" disabled={copies <= 0}>Borrow Book</Button>
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-md">
                     <DialogHeader>
@@ -83,7 +102,7 @@ function Borrow() {
                                 <DialogClose asChild>
                                     <Button type="button" variant="outline">Cancel</Button>
                                 </DialogClose>
-                                <Button type="submit">Save Changes</Button>
+                                <Button type="submit">{isLoading ? "Changing..." : "Save Changes"} </Button>
                             </DialogFooter>
                         </form>
                     </Form>

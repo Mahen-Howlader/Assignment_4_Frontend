@@ -28,8 +28,6 @@ const bookSchema = z.object({
     copies: z.coerce.number().min(1, "Copies must be at least 1"),
 });
 
-
-
 type FormData = z.infer<typeof bookSchema>;
 
 function AddBook() {
@@ -51,10 +49,11 @@ function AddBook() {
         try {
             const allData = { ...data, available: true };
             const response = await createData(allData).unwrap();
-            toast.success(response?.message || "✅ Book added successfully!");
+            toast.success(response?.message || "✅ Book added successfully!", {duration : 1000});
             form.reset();
             navigator("/all-books")
         } catch (error: any) {
+            console.log(error)
             toast.error(`Failed to add book: ${error?.data?.message || "Unknown error"}`);
         }
     };

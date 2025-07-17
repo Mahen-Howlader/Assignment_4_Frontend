@@ -11,14 +11,19 @@ import {
 } from "@/components/ui/table"
 import type { Book } from "@/Typescript/typescript";
 import Bookcard from "@/components/module/Bookcard";
+import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
+import { useSearchParams } from "react-router";
 
 function Allbook() {
-    const { data, isLoading, isError } = useGetBookQuery(undefined);
+    const [searchParams] = useSearchParams();
+    const limit = Number(searchParams.get("limit")) || 10; // fallback 10
+    const page = Number(searchParams.get("page")) || 1;
+    const { data, isLoading, isError } = useGetBookQuery({ limit, page });
     if (isLoading) return <p>Loading...</p>;
     if (isError) return <p>Error fetching books.</p>;
-
+    console.log(limit)
     return (
-        <div className="px-10 mt-5">
+        <div className=" m-5 border">
             <Table>
                 <TableCaption>A list of all books in the system.</TableCaption>
                 <TableHeader>
@@ -37,13 +42,38 @@ function Allbook() {
                         < Bookcard key={book._id} book={book} />
                     ))}
                 </TableBody>
-                <TableFooter>
+                <TableFooter className="mt-5">
                     <TableRow>
-                        <TableCell colSpan={6}>Total Books {data?.data?.length}</TableCell>
-                        <TableCell className="text-right">1</TableCell>
+                        <TableCell colSpan={6}>Total Books {data?.total}</TableCell>
                     </TableRow>
                 </TableFooter>
             </Table>
+            <div className="mt-4 flex justify-center my-5">
+                <Pagination>
+                    <PaginationContent>
+                        <PaginationItem>
+                            <PaginationPrevious href="#" />
+                        </PaginationItem>
+                        <PaginationItem>
+                            <PaginationLink href="#">1</PaginationLink>
+                        </PaginationItem>
+                        <PaginationItem>
+                            <PaginationLink href="#" isActive>
+                                2
+                            </PaginationLink>
+                        </PaginationItem>
+                        <PaginationItem>
+                            <PaginationLink href="#">3</PaginationLink>
+                        </PaginationItem>
+                        <PaginationItem>
+                            <PaginationEllipsis />
+                        </PaginationItem>
+                        <PaginationItem>
+                            <PaginationNext href="#" />
+                        </PaginationItem>
+                    </PaginationContent>
+                </Pagination>
+            </div>
 
 
         </div>
